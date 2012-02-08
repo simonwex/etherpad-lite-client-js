@@ -10,6 +10,7 @@ exports.connect = (options={}) ->
   api = {}
   api.options = u_.extend {}, options
 
+  api.options.allowPostRequests ||= true
   api.options.host ||= 'localhost'
   api.options.port ||= 9001
 
@@ -26,7 +27,7 @@ exports.connect = (options={}) ->
     data = querystring.stringify apiOptions
 
     # If we have a "text" field, we POST.
-    if (typeof(apiOptions['text']) != undefined)
+    if (typeof(apiOptions['text']) != undefined && @options.allowPostRequests)
       httpOptions['method'] = 'POST'
       httpOptions['headers'] =
         'Content-Type': 'application/x-www-form-urlencoded',
