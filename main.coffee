@@ -17,17 +17,31 @@ exports.connect = (options={}) ->
   api.call = (functionName, functionArgs, callback) ->
     rootPath = '/api/1/'
     apiOptions = u_.extend { 'apikey': @options.apikey }, functionArgs
+
     httpOptions =
       host: @options.host
       port: @options.port
-      path: rootPath + functionName + '?' + querystring.stringify apiOptions
+      path: rootPath + functionName
+
+    data = querystring.stringify apiOptions
+
+    # If we have a "text" field, we POST.
+    if (typeof(apiOptions['text']) != undefined)
+      httpOptions['method'] = 'POST'
+      httpOptions['headers'] =
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': data.length
+    else
+      httpOptions['method'] = 'GET'
+      httpOptions['path'] += '?' + data
 
     chunks = []
-    req = http.get httpOptions, (res) ->
+    req = http.request httpOptions, (res) ->
       res.on 'data', (data) ->
         chunks.push(data)
       res.on 'end', () ->
         try
+          console.log(chunks.join(''))
           response = JSON.parse chunks.join('')
         catch error
           callback { code: -1, message: 'cannot parse the API response' }, null
@@ -40,7 +54,10 @@ exports.connect = (options={}) ->
 
     req.on 'error', (error) ->
       callback { code: -1, message: (error.message or error) }, null
+    if httpOptions['method'] == 'POST'
+      req.write(data);
 
+    req.end()
 
   apiFunctions = [
     'createGroup',
