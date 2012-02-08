@@ -42,7 +42,6 @@ exports.connect = (options={}) ->
         chunks.push(data)
       res.on 'end', () ->
         try
-          console.log(chunks.join(''))
           response = JSON.parse chunks.join('')
         catch error
           callback { code: -1, message: 'cannot parse the API response' }, null
