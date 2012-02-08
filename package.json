@@ -3,6 +3,7 @@
   "description": "Wrapper for the Etherpad Lite API",
   "version": "0.2.0",
   "author": "Tomas Sedovic <tomas@sedovic.cz>",
+  "contributors": ["Simon Wex <simon@simonwex.com>" ],
   "keywords": ["etherpad", "api"],
   "homepage": "https://github.com/tomassedovic/etherpad-lite-client-js",
   "repository": {
